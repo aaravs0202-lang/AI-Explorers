@@ -287,6 +287,23 @@
     font-family:"Space Grotesk";font-weight:600;color:var(--amber-soft);
   }
 
+  /* ---------- Contact ---------- */
+  .contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin-top:46px;}
+  @media(max-width:760px){.contact-grid{grid-template-columns:1fr;}}
+  .contact-card{border:1px solid var(--line);border-radius:20px;padding:30px;background:linear-gradient(165deg,var(--surface-2),rgba(16,14,38,.45));}
+  .contact-card.a{--ca:var(--amber);}
+  .contact-card.b{--ca:var(--lilac);}
+  .contact-card .avatar{width:54px;height:54px;border-radius:50%;display:grid;place-items:center;
+    font-family:"Space Grotesk";font-weight:700;font-size:1.4rem;color:#1A1340;background:var(--ca);margin-bottom:16px;}
+  .contact-card h3{font-size:1.4rem;margin:0 0 2px;}
+  .contact-card .role{font-family:"Space Mono";font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:14px;}
+  .contact-row{display:flex;align-items:center;gap:13px;padding:13px 0;border-top:1px solid var(--line);}
+  .contact-row .ic{width:36px;height:36px;border-radius:10px;display:grid;place-items:center;flex:none;
+    background:rgba(165,180,252,.1);border:1px solid var(--line);font-size:1rem;}
+  .contact-row .lbl{font-family:"Space Mono";font-size:.6rem;letter-spacing:.13em;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:2px;}
+  .contact-row a{color:var(--cream);text-decoration:none;font-size:1rem;transition:color .2s;word-break:break-word;}
+  .contact-row a:hover{color:var(--ca);}
+
   /* ---------- Final CTA ---------- */
   .final{padding:96px 0;text-align:center;position:relative;overflow:hidden;}
   .final .glow{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:760px;height:380px;border-radius:50%;
@@ -323,6 +340,7 @@
       <a href="#cohorts">Cohorts</a>
       <a href="#journey">The 6 weeks</a>
       <a href="#enroll">Pricing</a>
+      <a href="#contact">Contact</a>
       <a class="btn btn-primary" href="https://docs.google.com/forms/d/1Xsk2m0zc_3D8Q5TN9Xaf5UX-wjx18gfX2KUdB31gKIw/viewform" target="_blank" rel="noopener">Save a spot</a>
     </div>
   </div>
@@ -561,11 +579,48 @@
   </div>
 </section>
 
+<!-- CONTACT -->
+<section class="band" id="contact">
+  <div class="wrap">
+    <span class="eyebrow reveal">Get in touch</span>
+    <h2 class="reveal">More ways to reach us</h2>
+    <p class="intro reveal">The fastest way to enroll is the sign-up form — but if you'd rather talk to a real person, reach either of us directly.</p>
+    <div class="contact-grid">
+      <div class="contact-card a reveal">
+        <div class="avatar">A</div>
+        <h3>Arav</h3>
+        <div class="role">Co-founder &amp; Instructor</div>
+        <div class="contact-row">
+          <span class="ic">✉️</span>
+          <span><span class="lbl">Email</span><a href="https://mail.google.com/mail/?view=cm&to=aravsingh.ia2028@gmail.com&su=AI%20Explorers%20%E2%80%94%20Question&body=Hi%20Arav!%20I%20have%20a%20question%20about%20AI%20Explorers%3A%0A%0A" target="_blank" rel="noopener">aravsingh.ia2028@gmail.com</a></span>
+        </div>
+        <div class="contact-row">
+          <span class="ic">📞</span>
+          <span><span class="lbl">Phone</span><a href="tel:+12488785728">248-878-5728</a></span>
+        </div>
+      </div>
+      <div class="contact-card b reveal">
+        <div class="avatar">K</div>
+        <h3>Krish</h3>
+        <div class="role">Co-founder &amp; Instructor</div>
+        <div class="contact-row">
+          <span class="ic">✉️</span>
+          <span><span class="lbl">Email</span><a href="https://mail.google.com/mail/?view=cm&to=jyotiraditya0828@gmail.com&su=AI%20Explorers%20%E2%80%94%20Question&body=Hi%20Krish!%20I%20have%20a%20question%20about%20AI%20Explorers%3A%0A%0A" target="_blank" rel="noopener">jyotiraditya0828@gmail.com</a></span>
+        </div>
+        <div class="contact-row">
+          <span class="ic">📞</span>
+          <span><span class="lbl">Phone</span><a href="tel:+12486069903">248-606-9903</a></span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
 <footer>
   <div class="wrap foot-in">
     <div class="brand"><span class="spark">✦</span> AI Explorers</div>
     <div>A 6-week youth AI program · Grades 4–7 · Taught by high schoolers</div>
-    <div><a href="#why">Why</a> · <a href="#cohorts">Cohorts</a> · <a href="#journey">Journey</a> · <a href="#join">Enroll</a></div>
+    <div><a href="#why">Why</a> · <a href="#cohorts">Cohorts</a> · <a href="#journey">Journey</a> · <a href="#contact">Contact</a> · <a href="#join">Enroll</a></div>
   </div>
 </footer>
 
