@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>AI Explorers — A 6-week expedition into how AI really works</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=DM+Sans:opsz,wght@9..40,400;9..40,500&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --ink:#100E26;
+    --indigo:#1E1B4B;
+    --surface:#272361;
+    --surface-2:#2E2A6E;
+    --amber:#FBBF24;
+    --amber-soft:#FCD34D;
+    --lilac:#A5B4FC;
+    --lilac-2:#C7D2FE;
+    --cream:#F4F2FF;
+    --muted:#A6A1DC;
+    --line:rgba(165,180,252,.22);
+    --maxw:1140px;
+    --r:18px;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--ink);
+    color:var(--cream);
+    font-family:"DM Sans",system-ui,sans-serif;
+    font-size:18px;
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+  h1,h2,h3,h4{font-family:"Space Grotesk",sans-serif;line-height:1.05;margin:0;font-weight:700;letter-spacing:-.01em;}
+  a{color:inherit;}
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 24px;}
+  .eyebrow{
+    font-family:"Space Mono",monospace;
+    font-size:.72rem;
+    letter-spacing:.22em;
+    text-transform:uppercase;
+    color:var(--lilac);
+    margin:0 0 14px;
+    display:inline-flex;align-items:center;gap:10px;
+  }
+  .eyebrow::before{content:"";width:24px;height:1px;background:var(--lilac);opacity:.6;}
+
+  /* ---------- Nav ---------- */
+  nav{
+    position:sticky;top:0;z-index:50;
+    backdrop-filter:blur(10px);
+    background:rgba(16,14,38,.72);
+    border-bottom:1px solid var(--line);
+  }
+  .nav-in{display:flex;align-items:center;justify-content:space-between;height:64px;}
+  .brand{display:flex;align-items:center;gap:10px;font-family:"Space Grotesk";font-weight:700;letter-spacing:.02em;font-size:1.05rem;}
+  .brand .spark{color:var(--amber);font-size:1.2rem;line-height:0;}
+  .nav-links{display:flex;gap:28px;align-items:center;font-size:.92rem;}
+  .nav-links a{text-decoration:none;color:var(--muted);transition:color .2s;}
+  .nav-links a:hover{color:var(--cream);}
+  .btn{
+    font-family:"Space Grotesk";font-weight:600;font-size:.92rem;
+    border:none;border-radius:999px;cursor:pointer;text-decoration:none;
+    display:inline-flex;align-items:center;gap:8px;
+    padding:11px 20px;transition:transform .15s ease, box-shadow .2s ease, background .2s;
+  }
+  .btn-primary{background:var(--amber);color:#1A1340;box-shadow:0 6px 22px rgba(251,191,36,.28);}
+  .btn-primary:hover{transform:translateY(-2px);box-shadow:0 10px 30px rgba(251,191,36,.42);}
+  .btn-ghost{background:transparent;color:var(--cream);border:1px solid var(--line);}
+  .btn-ghost:hover{border-color:var(--lilac);background:rgba(165,180,252,.08);}
+  .nav-links .btn{padding:9px 18px;}
+  @media(max-width:760px){.nav-links a:not(.btn){display:none;}}
+
+  /* ---------- Hero ---------- */
+  .hero{position:relative;padding:96px 0 80px;overflow:hidden;}
+  #stars{position:absolute;inset:0;width:100%;height:100%;z-index:0;pointer-events:none;}
+  .hero-glow{
+    position:absolute;z-index:0;left:50%;top:-10%;transform:translateX(-50%);
+    width:900px;height:520px;border-radius:50%;
+    background:radial-gradient(ellipse at center,rgba(124,107,255,.32),transparent 62%);
+    filter:blur(20px);pointer-events:none;
+  }
+  .hero .wrap{position:relative;z-index:2;}
+  .hero-tag{display:inline-flex;gap:10px;align-items:center;background:rgba(165,180,252,.1);border:1px solid var(--line);
+    border-radius:999px;padding:7px 15px;font-family:"Space Mono";font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:var(--lilac-2);margin-bottom:26px;}
+  .hero-tag b{color:var(--amber);font-weight:700;}
+  h1.title{
+    font-size:clamp(2.7rem,7.4vw,5.6rem);
+    letter-spacing:-.03em;font-weight:700;margin-bottom:8px;
+  }
+  h1.title .a{color:var(--amber);}
+  .lede{font-size:clamp(1.05rem,2.2vw,1.4rem);color:var(--lilac-2);max-width:620px;margin:18px 0 16px;line-height:1.45;font-weight:500;}
+  .sub{color:var(--muted);max-width:560px;margin:0 0 32px;}
+  .hero-cta{display:flex;gap:14px;flex-wrap:wrap;align-items:center;}
+  .hero-cta .note{font-size:.82rem;color:var(--muted);font-family:"Space Mono";}
+  .facts{
+    display:flex;flex-wrap:wrap;gap:0;margin-top:54px;border:1px solid var(--line);border-radius:var(--r);overflow:hidden;
+    background:linear-gradient(180deg,rgba(39,35,97,.5),rgba(30,27,75,.3));
+  }
+  .fact{flex:1 1 0;min-width:140px;padding:22px 24px;border-right:1px solid var(--line);}
+  .fact:last-child{border-right:none;}
+  .fact .n{font-family:"Space Grotesk";font-weight:700;font-size:1.75rem;color:var(--cream);line-height:1;}
+  .fact .n .unit{color:var(--amber);}
+  .fact .l{font-family:"Space Mono";font-size:.7rem;letter-spacing:.13em;text-transform:uppercase;color:var(--muted);margin-top:8px;}
+  @media(max-width:680px){.fact{flex:1 1 50%;border-bottom:1px solid var(--line);}.fact:nth-child(even){border-right:none;}}
+
+  /* ---------- Section scaffolding ---------- */
+  section{position:relative;}
+  .band{padding:90px 0;}
+  .band h2{font-size:clamp(1.9rem,4.4vw,3rem);letter-spacing:-.02em;max-width:680px;}
+  .band .intro{color:var(--muted);max-width:600px;margin-top:18px;font-size:1.05rem;}
+
+  /* ---------- Value props ---------- */
+  .vgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:48px;}
+  @media(max-width:880px){.vgrid{grid-template-columns:1fr;}}
+  .vcard{
+    background:linear-gradient(180deg,var(--surface),rgba(30,27,75,.65));
+    border:1px solid var(--line);border-radius:var(--r);padding:28px 26px;
+    transition:transform .2s ease,border-color .2s ease;
+  }
+  .vcard:hover{transform:translateY(-4px);border-color:rgba(165,180,252,.45);}
+  .vcard .ic{font-size:1.5rem;width:46px;height:46px;display:grid;place-items:center;border-radius:12px;
+    background:rgba(251,191,36,.12);border:1px solid rgba(251,191,36,.3);margin-bottom:18px;}
+  .vcard h3{font-size:1.22rem;margin-bottom:8px;}
+  .vcard p{color:var(--muted);font-size:.98rem;margin:0;}
+
+  /* ---------- Cohorts ---------- */
+  .cohorts{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin-top:48px;}
+  @media(max-width:880px){.cohorts{grid-template-columns:1fr;}}
+  .cohort{
+    border-radius:22px;padding:34px 32px;position:relative;overflow:hidden;
+    border:1px solid var(--line);
+    background:linear-gradient(165deg,var(--surface-2),rgba(16,14,38,.4));
+  }
+  .cohort.a{box-shadow:inset 0 0 0 1px rgba(251,191,36,.18);}
+  .cohort.b{box-shadow:inset 0 0 0 1px rgba(165,180,252,.22);}
+  .cohort .badge{font-family:"Space Mono";font-size:.7rem;letter-spacing:.16em;text-transform:uppercase;
+    padding:6px 12px;border-radius:999px;display:inline-block;margin-bottom:20px;font-weight:700;}
+  .cohort.a .badge{background:rgba(251,191,36,.16);color:var(--amber-soft);}
+  .cohort.b .badge{background:rgba(165,180,252,.16);color:var(--lilac-2);}
+  .cohort h3{font-size:1.7rem;margin-bottom:4px;}
+  .cohort .who{color:var(--muted);font-family:"Space Mono";font-size:.84rem;margin-bottom:20px;}
+  .cohort p.desc{color:var(--lilac-2);font-size:1rem;margin:0 0 22px;}
+  .cohort ul{list-style:none;padding:0;margin:0 0 24px;display:grid;gap:10px;}
+  .cohort li{display:flex;gap:11px;align-items:flex-start;font-size:.96rem;color:var(--cream);}
+  .cohort li .arw{color:var(--amber);flex:none;font-family:"Space Mono";}
+  .cohort.b li .arw{color:var(--lilac);}
+  .capstone{border-top:1px solid var(--line);padding-top:18px;font-size:.92rem;color:var(--muted);}
+  .capstone b{color:var(--cream);font-family:"Space Grotesk";}
+
+  /* ---------- Journey (signature) ---------- */
+  .journey{background:linear-gradient(180deg,rgba(30,27,75,.0),rgba(30,27,75,.45),rgba(30,27,75,.0));}
+  .toggle{display:inline-flex;background:rgba(16,14,38,.6);border:1px solid var(--line);border-radius:999px;padding:5px;margin-top:30px;gap:4px;}
+  .toggle button{
+    font-family:"Space Grotesk";font-weight:600;font-size:.9rem;color:var(--muted);
+    background:transparent;border:none;border-radius:999px;padding:10px 20px;cursor:pointer;transition:all .2s;white-space:nowrap;
+  }
+  .toggle button.on{color:#1A1340;}
+  .toggle button.on.a{background:var(--amber);}
+  .toggle button.on.b{background:var(--lilac);}
+  .route-meta{margin-top:22px;font-family:"Space Mono";font-size:.8rem;color:var(--muted);letter-spacing:.04em;}
+  .route-meta .dest{color:var(--cream);}
+
+  .path{margin-top:46px;position:relative;}
+  .trail{display:grid;grid-template-columns:repeat(6,1fr);gap:0;position:relative;}
+  .trail::before{ /* horizontal route line */
+    content:"";position:absolute;top:50%;left:6%;right:6%;height:0;
+    border-top:2px dashed var(--line);transform:translateY(-50%);z-index:0;
+  }
+  .wp{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;min-height:300px;justify-content:center;padding:0 8px;}
+  .wp .node{
+    width:20px;height:20px;border-radius:50%;background:var(--ink);
+    border:2px solid var(--lilac);position:relative;z-index:2;flex:none;
+    box-shadow:0 0 0 6px rgba(16,14,38,.9);transition:all .25s;
+  }
+  .wp .node::after{content:"";position:absolute;inset:4px;border-radius:50%;background:var(--lilac);opacity:0;transition:opacity .25s;}
+  .wp.lit .node{border-color:var(--accent);box-shadow:0 0 0 6px rgba(16,14,38,.9),0 0 16px 2px var(--accent);}
+  .wp.lit .node::after{background:var(--accent);opacity:1;}
+  .wp .card{
+    background:linear-gradient(180deg,var(--surface),rgba(16,14,38,.5));
+    border:1px solid var(--line);border-radius:14px;padding:16px 16px;width:100%;
+    transition:transform .25s ease,border-color .25s ease;
+  }
+  .wp:hover .card{transform:translateY(-4px);border-color:var(--accent);}
+  .wp.top .card{order:-1;margin-bottom:26px;}
+  .wp.bot .card{margin-top:26px;}
+  .wp .wk{font-family:"Space Mono";font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin-bottom:7px;}
+  .wp .wt{font-family:"Space Grotesk";font-weight:600;font-size:1.02rem;line-height:1.12;margin-bottom:7px;}
+  .wp .wd{font-size:.84rem;color:var(--muted);line-height:1.4;}
+  /* vertical tick connecting node to card */
+  .wp .tick{position:absolute;left:50%;width:1px;background:var(--line);transform:translateX(-50%);height:26px;z-index:0;}
+  .wp.top .tick{bottom:50%;margin-bottom:10px;}
+  .wp.bot .tick{top:50%;margin-top:10px;}
+
+  @media(max-width:860px){
+    .trail{grid-template-columns:1fr;gap:0;}
+    .trail::before{top:0;bottom:0;left:13px;right:auto;width:0;height:auto;border-top:none;border-left:2px dashed var(--line);transform:none;}
+    .wp{flex-direction:row;align-items:flex-start;gap:18px;min-height:0;padding:14px 0;justify-content:flex-start;}
+    .wp .node{margin-top:4px;order:-1;}
+    .wp.top .card,.wp.bot .card{order:0;margin:0;}
+    .wp .tick{display:none;}
+  }
+
+  /* ---------- Week detail (clickable journey) ---------- */
+  .path .hint{margin-top:20px;font-family:"Space Mono";font-size:.72rem;letter-spacing:.05em;color:var(--muted);text-align:center;}
+  .wp .card{cursor:pointer;}
+  .wp.active .card{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent);}
+  .week-detail{
+    margin-top:24px;border:1px solid var(--line);border-left:3px solid var(--accent,var(--amber));
+    border-radius:16px;padding:26px 28px;background:linear-gradient(180deg,var(--surface),rgba(16,14,38,.5));
+  }
+  .wd-num{font-family:"Space Mono";font-size:.7rem;letter-spacing:.15em;text-transform:uppercase;color:var(--accent,var(--amber));}
+  .wd-head h3{font-size:1.35rem;margin:9px 0 4px;}
+  .wd-tag{color:var(--lilac-2);margin:0 0 20px;font-size:1rem;}
+  .wd-cols{display:grid;grid-template-columns:1.5fr 1fr;gap:28px;}
+  @media(max-width:760px){.wd-cols{grid-template-columns:1fr;gap:18px;}}
+  .wd-cols h4{font-family:"Space Mono";font-size:.68rem;letter-spacing:.13em;text-transform:uppercase;color:var(--muted);margin:0 0 12px;}
+  .wd-cols ul{list-style:none;padding:0;margin:0;display:grid;gap:11px;}
+  .wd-cols li{display:flex;gap:10px;font-size:.96rem;color:var(--cream);line-height:1.4;}
+  .wd-cols li::before{content:"▸";color:var(--accent,var(--amber));flex:none;}
+  .wd-take{border-left:1px solid var(--line);padding-left:26px;}
+  @media(max-width:760px){.wd-take{border-left:none;padding-left:0;border-top:1px solid var(--line);padding-top:18px;}}
+  .wd-take p{margin:0;color:var(--lilac-2);font-size:.98rem;line-height:1.5;}
+
+  /* ---------- Final project ---------- */
+  .fp-grid{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin-top:46px;}
+  @media(max-width:880px){.fp-grid{grid-template-columns:1fr;}}
+  .fp-card{border:1px solid var(--line);border-radius:22px;padding:32px;background:linear-gradient(165deg,var(--surface-2),rgba(16,14,38,.45));}
+  .fp-card.a{box-shadow:inset 0 0 0 1px rgba(251,191,36,.18);--fp:var(--amber);}
+  .fp-card.b{box-shadow:inset 0 0 0 1px rgba(165,180,252,.22);--fp:var(--lilac);}
+  .fp-card .badge{font-family:"Space Mono";font-size:.7rem;letter-spacing:.16em;text-transform:uppercase;
+    padding:6px 12px;border-radius:999px;display:inline-block;margin-bottom:18px;font-weight:700;}
+  .fp-card.a .badge{background:rgba(251,191,36,.16);color:var(--amber-soft);}
+  .fp-card.b .badge{background:rgba(165,180,252,.16);color:var(--lilac-2);}
+  .fp-card h3{font-size:1.5rem;margin-bottom:6px;}
+  .fp-card .lead{color:var(--lilac-2);margin:0 0 22px;font-size:1rem;}
+  .fp-block{margin-bottom:20px;}
+  .fp-block:last-child{margin-bottom:0;}
+  .fp-block h4{font-family:"Space Mono";font-size:.68rem;letter-spacing:.13em;text-transform:uppercase;color:var(--muted);margin:0 0 10px;}
+  .fp-block ul{list-style:none;padding:0;margin:0;display:grid;gap:8px;}
+  .fp-block li{display:flex;gap:9px;font-size:.94rem;color:var(--cream);line-height:1.4;}
+  .fp-block li::before{content:"▸";color:var(--fp,var(--amber));flex:none;}
+  .fp-block p{margin:0;font-size:.94rem;color:var(--cream);line-height:1.5;}
+  .fp-demo{
+    margin-top:24px;border:1px solid var(--line);border-radius:20px;padding:30px 32px;
+    background:radial-gradient(circle at 85% -25%,rgba(251,191,36,.14),transparent 55%),linear-gradient(170deg,var(--surface-2),rgba(16,14,38,.5));
+  }
+  .fp-demo h3{font-size:1.45rem;margin-bottom:6px;}
+  .fp-demo h3 .em{color:var(--amber);}
+  .fp-demo>p{color:var(--lilac-2);margin:0;max-width:640px;}
+  .fp-demo .sub{color:var(--muted);font-family:"Space Mono";font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;margin:20px 0 12px;}
+  .fp-demo ul{list-style:none;padding:0;margin:0;display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+  @media(max-width:680px){.fp-demo ul{grid-template-columns:1fr;}}
+  .fp-demo li{display:flex;gap:11px;align-items:flex-start;color:var(--lilac-2);font-size:.95rem;}
+  .fp-demo li .dot{color:var(--amber);font-family:"Space Mono";flex:none;}
+
+  /* ---------- Pricing / Enroll ---------- */
+  .enroll{background:linear-gradient(180deg,rgba(30,27,75,.0),rgba(30,27,75,.6));}
+  .price-grid{display:grid;grid-template-columns:1.1fr 1fr;gap:22px;margin-top:46px;align-items:stretch;}
+  @media(max-width:880px){.price-grid{grid-template-columns:1fr;}}
+  .price-card{
+    border:1px solid var(--line);border-radius:22px;padding:34px;
+    background:linear-gradient(170deg,var(--surface),rgba(16,14,38,.5));position:relative;overflow:hidden;
+  }
+  .price-card.feature{border-color:rgba(251,191,36,.4);box-shadow:0 0 0 1px rgba(251,191,36,.2),0 20px 50px rgba(0,0,0,.3);}
+  .price-row{display:flex;align-items:baseline;gap:14px;margin:6px 0 4px;}
+  .price-now{font-family:"Space Grotesk";font-weight:700;font-size:3.4rem;color:var(--amber);line-height:1;}
+  .price-was{font-family:"Space Grotesk";font-size:1.4rem;color:var(--muted);text-decoration:line-through;}
+  .price-card .term{font-family:"Space Mono";font-size:.78rem;color:var(--lilac-2);letter-spacing:.06em;}
+  .price-card ul{list-style:none;padding:0;margin:24px 0 0;display:grid;gap:12px;}
+  .price-card li{display:flex;gap:11px;align-items:flex-start;font-size:.96rem;}
+  .price-card li .ck{color:var(--amber);flex:none;}
+  .acc{
+    margin-top:22px;border:1px dashed rgba(165,180,252,.4);border-radius:16px;padding:20px 22px;
+    background:rgba(165,180,252,.06);
+  }
+  .acc h4{font-family:"Space Grotesk";font-size:1.05rem;margin-bottom:6px;color:var(--lilac-2);}
+  .acc p{margin:0;color:var(--muted);font-size:.93rem;}
+
+  .charity{
+    margin-top:22px;display:flex;align-items:center;gap:14px;justify-content:center;text-align:center;
+    border-radius:16px;padding:18px;background:rgba(251,191,36,.08);border:1px solid rgba(251,191,36,.25);
+    font-family:"Space Grotesk";font-weight:600;color:var(--amber-soft);
+  }
+
+  /* ---------- Final CTA ---------- */
+  .final{padding:96px 0;text-align:center;position:relative;overflow:hidden;}
+  .final .glow{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:760px;height:380px;border-radius:50%;
+    background:radial-gradient(ellipse,rgba(124,107,255,.28),transparent 65%);filter:blur(20px);z-index:0;}
+  .final .wrap{position:relative;z-index:1;}
+  .final h2{font-size:clamp(2rem,5.5vw,3.6rem);max-width:740px;margin:0 auto 16px;}
+  .final p{color:var(--lilac-2);max-width:520px;margin:0 auto 32px;}
+  .final .hero-cta{justify-content:center;}
+
+  footer{border-top:1px solid var(--line);padding:40px 0;color:var(--muted);font-size:.86rem;}
+  .foot-in{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;align-items:center;}
+  footer a{color:var(--lilac-2);text-decoration:none;}
+  footer a:hover{color:var(--cream);}
+
+  /* reveal */
+  .reveal{opacity:0;transform:translateY(24px);transition:opacity .7s ease,transform .7s ease;}
+  .reveal.in{opacity:1;transform:none;}
+
+  :focus-visible{outline:2px solid var(--amber);outline-offset:3px;border-radius:4px;}
+
+  @media(prefers-reduced-motion:reduce){
+    *{animation:none!important;transition:none!important;scroll-behavior:auto!important;}
+    .reveal{opacity:1;transform:none;}
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="wrap nav-in">
+    <div class="brand"><span class="spark">✦</span> AI Explorers</div>
+    <div class="nav-links">
+      <a href="#why">Why it works</a>
+      <a href="#cohorts">Cohorts</a>
+      <a href="#journey">The 6 weeks</a>
+      <a href="#enroll">Pricing</a>
+      <a class="btn btn-primary" href="https://docs.google.com/forms/d/1Xsk2m0zc_3D8Q5TN9Xaf5UX-wjx18gfX2KUdB31gKIw/viewform" target="_blank" rel="noopener">Save a spot</a>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<header class="hero">
+  <canvas id="stars"></canvas>
+  <div class="hero-glow"></div>
+  <div class="wrap">
+    <span class="hero-tag">Summer 2026 &nbsp;·&nbsp; Grades 4–7 &nbsp;·&nbsp; <b>Taught by high schoolers</b></span>
+    <h1 class="title">Kids don't just <span class="a">use</span> AI here.<br/>They learn how it <span class="a">thinks.</span></h1>
+    <p class="lede">A 6-week expedition that takes curious kids from "what is a computer?" all the way to training their own AI — and knowing when not to trust it.</p>
+    <p class="sub">Small groups. Real projects. A family Demo Day at the finish. Led by high schoolers who actually remember being a kid, including an instructor who completed a Stanford University AI course.</p>
+    <div class="hero-cta">
+      <a class="btn btn-primary" href="https://docs.google.com/forms/d/1Xsk2m0zc_3D8Q5TN9Xaf5UX-wjx18gfX2KUdB31gKIw/viewform" target="_blank" rel="noopener">Save a spot →</a>
+      <a class="btn btn-ghost" href="#journey">See the 6-week journey</a>
+    </div>
+
+    <div class="facts">
+      <div class="fact"><div class="n">6<span class="unit">wk</span></div><div class="l">2 hrs / week</div></div>
+      <div class="fact"><div class="n">4–7</div><div class="l">Two age cohorts</div></div>
+      <div class="fact"><div class="n">≤16</div><div class="l">Students / cohort</div></div>
+      <div class="fact"><div class="n">$0</div><div class="l">Software cost — all free tools</div></div>
+    </div>
+  </div>
+</header>
+
+<!-- WHY -->
+<section class="band" id="why">
+  <div class="wrap">
+    <span class="eyebrow reveal">Why this isn't another screen-time camp</span>
+    <h2 class="reveal">Curiosity first. Real understanding underneath.</h2>
+    <p class="intro reveal">Most "AI for kids" programs let children poke at a chatbot and call it a day. Ours builds genuine mental models — how computers follow instructions, how models learn from data, and why a confident answer can still be wrong.</p>
+    <div class="vgrid">
+      <div class="vcard reveal"><div class="ic">🧠</div><h3>Understanding, not magic</h3><p>Kids leave able to explain what AI is actually doing — pattern-matching from data — instead of treating it like a wizard behind a curtain.</p></div>
+      <div class="vcard reveal"><div class="ic">🔍</div><h3>Built-in BS detector</h3><p>Every cohort fact-checks real AI answers. Spotting when AI is confidently wrong is the most valuable skill we teach — and they'll use it for life.</p></div>
+      <div class="vcard reveal"><div class="ic">🛠️</div><h3>They build something real</h3><p>This isn't a lecture. Students train their own working AI model and demo it live to their families on the final day.</p></div>
+      <div class="vcard reveal"><div class="ic">👋</div><h3>Taught by high schoolers</h3><p>Near-peer instructors keep it relatable and low-pressure — close enough in age to be cool, prepared enough to actually teach it well.</p></div>
+      <div class="vcard reveal"><div class="ic">👥</div><h3>Genuinely small groups</h3><p>Capped at 16 per cohort so every kid gets attention, asks questions out loud, and never hides at the back.</p></div>
+      <div class="vcard reveal"><div class="ic">💛</div><h3>Built to be accessible</h3><p>Scholarship spots in every cohort, a sibling discount, and a portion of every tuition donated to charity. No family gets singled out.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- COHORTS -->
+<section class="band" id="cohorts">
+  <div class="wrap">
+    <span class="eyebrow reveal">Two routes, one expedition</span>
+    <h2 class="reveal">A cohort that meets your kid where they are</h2>
+    <p class="intro reveal">Students are grouped by age so the depth fits. Younger Explorers build intuition; older Explorers get into the real math and modern systems.</p>
+    <div class="cohorts">
+      <div class="cohort a reveal">
+        <span class="badge">Explorers A · Grades 4–5 · Ages 9–11</span>
+        <h3>Understanding AI</h3>
+        <p class="who">For kids ready to genuinely get how computers and AI work.</p>
+        <p class="desc">We build real CS foundations first — instructions, logic, loops, data — then reveal what makes AI different, with a quick live AI demo every week to keep the magic alive.</p>
+        <ul>
+          <li><span class="arw">→</span> How computers follow precise instructions</li>
+          <li><span class="arw">→</span> If/then logic &amp; decision trees</li>
+          <li><span class="arw">→</span> Loops, data &amp; finding patterns</li>
+          <li><span class="arw">→</span> How AI learns — and when it gets things wrong</li>
+        </ul>
+        <p class="capstone"><b>Capstone:</b> each Explorer trains their own image-recognition model in Teachable Machine and demos it live on Demo Day.</p>
+      </div>
+      <div class="cohort b reveal">
+        <span class="badge">Explorers B · Grades 6–7 · Ages 11–13</span>
+        <h3>Building with AI</h3>
+        <p class="who">For kids ready for real technical depth and a bigger build.</p>
+        <p class="desc">From the Turing Test to how LLMs predict the next word — including the actual algebra behind how models learn, taught visually so it clicks.</p>
+        <ul>
+          <li><span class="arw">→</span> Machine learning &amp; prompt engineering</li>
+          <li><span class="arw">→</span> The math behind learning (functions &amp; error)</li>
+          <li><span class="arw">→</span> LLMs, RAG, AI agents &amp; multimodal AI</li>
+          <li><span class="arw">→</span> Bias, ethics &amp; real-world AI policy</li>
+        </ul>
+        <p class="capstone"><b>Capstone:</b> an AI Impact Report plus a tangible working prototype — a trained model, chatbot, or design — presented to families.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- JOURNEY (signature) -->
+<section class="band journey" id="journey">
+  <div class="wrap">
+    <span class="eyebrow reveal">The expedition log</span>
+    <h2 class="reveal">Six weeks, one waypoint at a time</h2>
+    <p class="intro reveal">Each week is a stop on the route. Pick a cohort to trace its path from first principles all the way to a live demo.</p>
+
+    <div class="toggle reveal" role="tablist" aria-label="Choose a cohort route">
+      <button id="tab-a" class="on a" role="tab" aria-selected="true" onclick="setRoute('a')">Explorers A · Grades 4–5</button>
+      <button id="tab-b" class="b" role="tab" aria-selected="false" onclick="setRoute('b')">Explorers B · Grades 6–7</button>
+    </div>
+    <div class="route-meta reveal">ROUTE <span id="route-code">A-45</span> &nbsp;·&nbsp; START: <span class="dest">First principles</span> &nbsp;→&nbsp; DESTINATION: <span class="dest" id="route-dest">Teachable Machine Demo Day</span></div>
+
+    <div class="path">
+      <div class="trail" id="trail"></div>
+      <p class="hint reveal">Tap any week above to see exactly what happens in class</p>
+      <div class="week-detail" id="weekDetail"></div>
+    </div>
+  </div>
+</section>
+
+<!-- FINAL PROJECT -->
+<section class="band" id="finalproject">
+  <div class="wrap">
+    <span class="eyebrow reveal">The final project</span>
+    <h2 class="reveal">Every Explorer builds real AI — then shows it off</h2>
+    <p class="intro reveal">The last two weeks are a capstone. It's launched in Week 5, built partly at home, and presented live to families on Demo Day in Week 6. What each Explorer builds depends on their cohort.</p>
+
+    <div class="fp-grid">
+      <div class="fp-card a reveal">
+        <span class="badge">Explorers A · Grades 4–5</span>
+        <h3>Teachable Machine Classifier</h3>
+        <p class="lead">Train your very own AI image classifier on a topic you choose — then prove it works.</p>
+        <div class="fp-block">
+          <h4>What you build</h4>
+          <p>A 2-class image model in Teachable Machine: thumbs-up vs thumbs-down, smiling vs neutral, your pet vs not your pet — whatever you pick.</p>
+        </div>
+        <div class="fp-block">
+          <h4>The requirements</h4>
+          <ul>
+            <li>At least 30 training examples per class</li>
+            <li>Tested on 10+ examples it has never seen</li>
+            <li>Written up: your accuracy, one thing it got wrong, and why</li>
+          </ul>
+        </div>
+        <div class="fp-block">
+          <h4>Your 2-minute live demo</h4>
+          <ul>
+            <li>What you classified and why you chose it</li>
+            <li>How you trained it</li>
+            <li>Show it working live — and failing, if you can</li>
+            <li>The one thing that surprised you</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="fp-card b reveal">
+        <span class="badge">Explorers B · Grades 6–7</span>
+        <h3>AI Impact Report + Prototype</h3>
+        <p class="lead">Find a real problem, design an AI solution, and build something tangible you can demonstrate.</p>
+        <div class="fp-block">
+          <h4>What you build (pick one)</h4>
+          <ul>
+            <li>A trained ML4Kids or Teachable Machine model</li>
+            <li>A working chatbot trained with ML4Kids</li>
+            <li>An annotated Figma / slides wireframe of the solution</li>
+          </ul>
+        </div>
+        <div class="fp-block">
+          <h4>Plus a full Impact Report</h4>
+          <p>Problem · How My AI Works · Fairness Audit · Ethics &amp; Risks · Next Steps.</p>
+        </div>
+        <div class="fp-block">
+          <h4>Your 7-minute presentation + Q&amp;A</h4>
+          <ul>
+            <li>The problem and why it matters</li>
+            <li>How your AI works — input, process, output</li>
+            <li>A live demo of your prototype</li>
+            <li>The fairness and ethics concerns you found</li>
+            <li>The math idea behind it, and what you'd build next</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="fp-demo reveal">
+      <h3><span class="em">Demo</span> Day — it ends with applause, not a worksheet</h3>
+      <p>Week 6 is a family showcase. Every Explorer presents the AI they built, explains how they trained it, and shows it running live (failures included — those are the best part).</p>
+      <div class="sub">What families see</div>
+      <ul>
+        <li><span class="dot">✦</span> Each kid presents a working AI project they trained themselves</li>
+        <li><span class="dot">✦</span> Real explanations: what it learned, where it fails, and why</li>
+        <li><span class="dot">✦</span> Peer recognition — Most Creative, Most Surprising, Best Explanation</li>
+        <li><span class="dot">✦</span> A "I used to think… now I think…" reflection from every Explorer</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ENROLL / PRICING -->
+<section class="band enroll" id="enroll">
+  <div class="wrap">
+    <span class="eyebrow reveal">Plain pricing</span>
+    <h2 class="reveal">One price. Everything included.</h2>
+    <p class="intro reveal">All tools are free and browser-based, so tuition just covers small-group teaching and materials — no surprise add-ons.</p>
+
+    <div class="price-grid">
+      <div class="price-card feature reveal">
+        <span class="cohort-badge" style="font-family:'Space Mono';font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--amber-soft);">Full 6-week program</span>
+        <div class="price-row">
+          <span class="price-now">$200</span>
+          <span class="price-was">$250</span>
+        </div>
+        <div class="term">Early-bird rate — lock it in before July 4th</div>
+        <ul>
+          <li><span class="ck">✓</span> Twelve hours of small-group instruction (6 × 2 hrs)</li>
+          <li><span class="ck">✓</span> All printed materials &amp; project packets</li>
+          <li><span class="ck">✓</span> Capstone project + a spot on Demo Day</li>
+          <li><span class="ck">✓</span> Certificate of completion</li>
+        </ul>
+      </div>
+      <div class="reveal">
+        <div class="price-card" style="height:100%;">
+          <span class="cohort-badge" style="font-family:'Space Mono';font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--lilac-2);">So everyone can join</span>
+          <h3 style="font-size:1.5rem;margin:10px 0 14px;">Discounts &amp; scholarships</h3>
+          <ul>
+            <li><span class="ck" style="color:var(--lilac);">✓</span> Sibling &amp; friend discount available</li>
+            <li><span class="ck" style="color:var(--lilac);">✓</span> 1–2 scholarship / sliding-scale spots reserved per cohort</li>
+            <li><span class="ck" style="color:var(--lilac);">✓</span> Just ask when you sign up — it stays private</li>
+          </ul>
+          <div class="acc">
+            <h4>Cost shouldn't be the reason a kid misses out</h4>
+            <p>Accessibility is core to why we started this. If tuition is a barrier, reach out — we'll quietly sort something out.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="charity reveal">💛 A portion of every tuition is donated to charity</div>
+  </div>
+</section>
+
+<!-- FINAL CTA -->
+<section class="final" id="join">
+  <div class="glow"></div>
+  <div class="wrap">
+    <span class="eyebrow reveal" style="justify-content:center;display:flex;">Spots are limited</span>
+    <h2 class="reveal">Ready to send a curious kid on the expedition?</h2>
+    <p class="reveal">Tell us a little about your Explorer and we'll follow up with dates, the right cohort, and how to enroll.</p>
+    <div class="hero-cta reveal">
+      <a class="btn btn-primary" id="enrollBtn" href="https://docs.google.com/forms/d/1Xsk2m0zc_3D8Q5TN9Xaf5UX-wjx18gfX2KUdB31gKIw/edit" target="_blank" rel="noopener">Enroll now →</a>
+      <a class="btn btn-ghost" id="questionsBtn" href="https://mail.google.com/mail/?view=cm&to=jyotiraditya0828@gmail.com,aravsingh.ia2028@gmail.com&su=AI%20Explorers%20%E2%80%94%20Question&body=Hi!%20I%20have%20a%20question%20about%20AI%20Explorers%3A%0A%0A" target="_blank" rel="noopener">Ask a question</a>
+    </div>
+    <p class="note" style="font-family:'Space Mono';font-size:.78rem;color:var(--muted);margin-top:22px;">Reach out before July 4th to lock in the early-bird rate.</p>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap foot-in">
+    <div class="brand"><span class="spark">✦</span> AI Explorers</div>
+    <div>A 6-week youth AI program · Grades 4–7 · Taught by high schoolers</div>
+    <div><a href="#why">Why</a> · <a href="#cohorts">Cohorts</a> · <a href="#journey">Journey</a> · <a href="#join">Enroll</a></div>
+  </div>
+</footer>
+
+<script>
+  /* ---------- Route data (straight from the curriculum) ---------- */
+  const ROUTES = {
+    a: {
+      code:"A-45", dest:"Teachable Machine Demo Day", cohort:"Cohort A",
+      weeks:[
+        {wk:"Week 01", t:"What is a computer, really?", tag:"Programs, inputs & outputs — and a first algorithm in plain English.",
+         inClass:["Play “Human Robot” — give a classmate exact step-by-step instructions and watch them go hilariously wrong","Build your first Scratch sprite that walks across the screen and says your name","Watch a live AI demo and start asking how it actually works"],
+         take:"Computers follow instructions exactly and fast — they don’t think for themselves."},
+        {wk:"Week 02", t:"If / then thinking", tag:"Conditional logic and decision trees, built hands-on in Scratch.",
+         inClass:["Crack the hidden rules behind everyday things like a traffic light","Trace a “cafeteria robot” decision tree through real choices — allergies, vegetarian, hot food","Build a Scratch program that reacts differently to every answer you give it"],
+         take:"How programs make decisions with if / then / else — the logic under every app."},
+        {wk:"Week 03", t:"Loops, data & patterns", tag:"Automating repetition and spotting patterns — the seed of AI.",
+         inClass:["Spot number patterns by hand, including the famous Fibonacci sequence","Hunt for patterns in a real dataset of test scores","Build a working Scratch quiz game that keeps score using loops and variables"],
+         take:"Loops automate repetition, and finding patterns in data is the core idea behind AI."},
+        {wk:"Week 04", t:"What is AI?", tag:"Training a real model in Teachable Machine and naming the AI they already use.",
+         inClass:["Sort 12 “AI or Not AI?” cards — is a calculator AI? Is Siri?","Train your own image model in Teachable Machine (thumbs-up vs thumbs-down)","Map the assistants, image generators and voice AI you already use every day"],
+         take:"AI finds its own rules from examples instead of being told them — and it can be confidently wrong."},
+        {wk:"Week 05", t:"When AI is wrong", tag:"Bias, fact-checking & creativity — plus the capstone launch.",
+         inClass:["Work through real bias scenarios — why an AI can be unfair, not just mistaken","Fact-check a live AI answer about something you already know well","Co-write a story with AI, then launch your capstone project"],
+         take:"AI is only as good as its training data — always verify before you trust it."},
+        {wk:"Week 06", t:"Demo Day", tag:"Live demos of the model each Explorer trained themselves.",
+         inClass:["Final practice and a quick test of your trained model","Give a 2-minute live demo to families — show it working, and failing!","Peer feedback, awards, and a reflection wall"],
+         take:"You can present the AI you built and explain exactly how it works."}
+      ]
+    },
+    b: {
+      code:"B-67", dest:"AI Impact Report + Prototype", cohort:"Cohort B",
+      weeks:[
+        {wk:"Week 01", t:"Intelligence, artificial & otherwise", tag:"The Turing Test and AI history, from rules to learning machines.",
+         inClass:["Design Turing-Test questions to unmask whether you’re talking to a human or an AI","Trace AI from rules-based systems (Deep Blue) to learning systems (AlphaGo)","Map real AI across a field you care about and choose your capstone problem"],
+         take:"The difference between narrow AI — superhuman at one task — and AGI, which doesn’t exist yet."},
+        {wk:"Week 02", t:"How machines learn", tag:"Supervised learning + a first real classifier, plus prompt engineering.",
+         inClass:["Play a prediction game to feel how models guess with confidence","Run prompt-engineering challenges — watch answers improve as your prompts get sharper","Build a real classifier to 80%+ accuracy and lock in your capstone problem"],
+         take:"How supervised learning works — and how to prompt an AI to get genuinely useful answers."},
+        {wk:"Week 03", t:"The math behind learning", tag:"Functions, error & gradient descent — taught visually, no calculus.",
+         inClass:["Model exam scores with y = mx + b and predict new results","Plot two competing models on graph paper and compare their error visually","“Walk downhill” to understand gradient descent (MSE as an optional extension)"],
+         take:"Training a model means finding the settings with the lowest error — all algebra, never calculus."},
+        {wk:"Week 04", t:"LLMs & modern AI", tag:"How LLMs predict words, plus RAG, agents & multimodal systems.",
+         inClass:["See how an LLM predicts the next word, one token at a time","Meet RAG, AI agents, multimodal AI and copilots — the systems behind modern tools","Deliberately trigger an AI hallucination, then fact-check it; analyze real bias cases"],
+         take:"How modern AI systems actually work — and the technical reasons they fail."},
+        {wk:"Week 05", t:"Ethics & policy", tag:"Real AI policy and ethics debates — plus the capstone launch.",
+         inClass:["Weigh real ethical frameworks against cases like facial recognition","Debate actual policy proposals and compare the EU AI Act with the US approach","Write your own policy position and officially launch your capstone"],
+         take:"Why regulating AI is genuinely hard — technology moves faster than the law."},
+        {wk:"Week 06", t:"Capstone presentations", tag:"An Impact Report and a working prototype, presented to families.",
+         inClass:["Give a 7-minute presentation of your AI Impact Report","Run a live demo of the prototype you built","Field real technical questions and earn peer recognition"],
+         take:"You can present a complete AI solution end to end — problem, build, ethics and all."}
+      ]
+    }
+  };
+
+  const trail = document.getElementById('trail');
+  function renderRoute(key){
+    const r = ROUTES[key];
+    const accent = key==='a' ? 'var(--amber)' : 'var(--lilac)';
+    trail.innerHTML = r.weeks.map((w,i)=>{
+      const pos = i % 2 === 0 ? 'top' : 'bot';
+      return `<div class="wp ${pos} lit" data-i="${i}" role="button" tabindex="0" aria-label="${w.wk}: ${w.t}" style="--accent:${accent}">
+        <div class="tick"></div>
+        <div class="card">
+          <div class="wk">${w.wk}</div>
+          <div class="wt">${w.t}</div>
+          <div class="wd">${w.tag}</div>
+        </div>
+        <div class="node"></div>
+      </div>`;
+    }).join('');
+    document.getElementById('route-code').textContent = r.code;
+    document.getElementById('route-dest').textContent = r.dest;
+    trail.querySelectorAll('.wp').forEach(el=>{
+      const i = +el.dataset.i;
+      el.addEventListener('click', ()=>selectWeek(key,i));
+      el.addEventListener('keydown', e=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); selectWeek(key,i); } });
+    });
+    selectWeek(key,0);
+  }
+  function selectWeek(key,i){
+    const r = ROUTES[key], w = r.weeks[i];
+    const accent = key==='a' ? 'var(--amber)' : 'var(--lilac)';
+    trail.querySelectorAll('.wp').forEach(el=>el.classList.toggle('active', +el.dataset.i===i));
+    const d = document.getElementById('weekDetail');
+    d.style.setProperty('--accent', accent);
+    d.innerHTML = `
+      <div class="wd-head">
+        <span class="wd-num">${w.wk} · ${r.cohort}</span>
+        <h3>${w.t}</h3>
+        <p class="wd-tag">${w.tag}</p>
+      </div>
+      <div class="wd-cols">
+        <div><h4>In class</h4><ul>${w.inClass.map(x=>`<li>${x}</li>`).join('')}</ul></div>
+        <div class="wd-take"><h4>Walk away knowing</h4><p>${w.take}</p></div>
+      </div>`;
+  }
+  function setRoute(key){
+    renderRoute(key);
+    const a=document.getElementById('tab-a'), b=document.getElementById('tab-b');
+    const isA = key==='a';
+    a.classList.toggle('on',isA); a.setAttribute('aria-selected',isA);
+    b.classList.toggle('on',!isA); b.setAttribute('aria-selected',!isA);
+  }
+  renderRoute('a');
+
+  /* ---------- Starfield ---------- */
+  const reduce = window.matchMedia('(prefers-reduced-motion:reduce)').matches;
+  const canvas = document.getElementById('stars');
+  const ctx = canvas.getContext('2d');
+  let stars=[], W, H, raf;
+  function initStars(){
+    const host = canvas.parentElement;
+    W = canvas.width = host.offsetWidth;
+    H = canvas.height = host.offsetHeight;
+    const count = Math.min(120, Math.floor(W*H/9000));
+    stars = Array.from({length:count},()=>({
+      x:Math.random()*W, y:Math.random()*H,
+      r:Math.random()*1.4+.3,
+      base:Math.random()*.5+.3,
+      tw:Math.random()*Math.PI*2,
+      sp:Math.random()*.02+.005
+    }));
+  }
+  function drawStars(){
+    ctx.clearRect(0,0,W,H);
+    for(const s of stars){
+      s.tw += s.sp;
+      const a = reduce ? s.base : s.base + Math.sin(s.tw)*.28;
+      ctx.globalAlpha = Math.max(.05,a);
+      ctx.fillStyle = Math.random()>.985 ? '#FBBF24' : '#C7D2FE';
+      ctx.beginPath(); ctx.arc(s.x,s.y,s.r,0,Math.PI*2); ctx.fill();
+    }
+    ctx.globalAlpha=1;
+    if(!reduce) raf = requestAnimationFrame(drawStars);
+  }
+  function startStars(){ cancelAnimationFrame(raf); initStars(); if(reduce){drawStars();} else {drawStars();} }
+  window.addEventListener('resize', ()=>{ startStars(); });
+  startStars();
+
+  /* ---------- Scroll reveal (with safety net) ---------- */
+  const revealEls = Array.from(document.querySelectorAll('.reveal'));
+  const showAll = ()=>revealEls.forEach(el=>el.classList.add('in'));
+  if(reduce || !('IntersectionObserver' in window)){
+    showAll();
+  } else {
+    const io = new IntersectionObserver((entries)=>{
+      entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target);} });
+    },{threshold:0, rootMargin:'0px 0px -8% 0px'});
+    revealEls.forEach(el=>io.observe(el));
+    // Failsafe: nothing stays hidden even if the observer never fires.
+    setTimeout(showAll, 2500);
+  }
+</script>
+</body>
+</html>
